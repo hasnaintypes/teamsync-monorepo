@@ -25,11 +25,11 @@ import {
 } from "@/components/ui/sidebar";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import useCreateProjectDialog from "@/hooks/use-create-project-dialog";
-import { ConfirmDialog } from "../resuable/confirm-dialog";
+import { ConfirmDialog } from "../reusable/confirm-dialog";
 import useConfirmDialog from "@/hooks/use-confirm-dialog";
 import { Button } from "../ui/button";
 import { Permissions } from "@/constant";
-import PermissionsGuard from "../resuable/permission-guard";
+import PermissionsGuard from "../reusable/permission-guard";
 import { useState } from "react";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import { PaginationType } from "@/types/api.type";
@@ -82,7 +82,7 @@ export function NavProjects() {
       {
         onSuccess: (data) => {
           queryClient.invalidateQueries({
-            queryKey: ["allprojects", workspaceId],
+            queryKey: ["all-projects", workspaceId],
           });
           toast({
             title: "Success",
@@ -119,7 +119,7 @@ export function NavProjects() {
             </button>
           </PermissionsGuard>
         </SidebarGroupLabel>
-        <SidebarMenu className="h-[320px] scrollbar overflow-y-auto pb-2">
+        <SidebarMenu className="h-[320px] overflow-y-auto pb-2">
           {isError ? <div>Error occured</div> : null}
           {isPending ? (
             <Loader

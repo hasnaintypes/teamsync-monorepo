@@ -8,12 +8,16 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
 import { Link, useLocation } from "react-router-dom";
 import useWorkspaceId from "@/hooks/use-workspace-id";
+import useTheme from "@/hooks/use-theme";
+import { Moon, Sun } from "lucide-react";
 
 const Header = () => {
   const location = useLocation();
   const workspaceId = useWorkspaceId();
+  const { theme, toggleTheme } = useTheme();
 
   const pathname = location.pathname;
 
@@ -27,7 +31,7 @@ const Header = () => {
 
   const pageHeading = getPageLabel(pathname);
   return (
-    <header className="flex sticky top-0 z-50 bg-white h-12 shrink-0 items-center border-b">
+    <header className="flex sticky top-0 z-50 bg-background h-12 shrink-0 items-center border-b">
       <div className="flex flex-1 items-center gap-2 px-3">
         <SidebarTrigger />
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -57,6 +61,16 @@ const Header = () => {
             )}
           </BreadcrumbList>
         </Breadcrumb>
+      </div>
+      <div className="px-3">
+        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+          <span className="sr-only">Toggle theme</span>
+        </Button>
       </div>
     </header>
   );

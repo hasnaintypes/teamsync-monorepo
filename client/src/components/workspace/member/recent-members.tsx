@@ -7,7 +7,7 @@ import { Loader } from "lucide-react";
 
 const RecentMembers = () => {
   const workspaceId = useWorkspaceId();
-  const { data, isPending } = useGetWorkspaceMembers(workspaceId);
+  const { data, isPending, isError } = useGetWorkspaceMembers(workspaceId);
 
   const members = data?.members || [];
 
@@ -15,11 +15,17 @@ const RecentMembers = () => {
     <div className="flex flex-col pt-2">
       {isPending ? (
         <Loader
-          className="w-8 h-8 
+          className="w-8 h-8
         animate-spin
         place-self-center flex"
         />
       ) : null}
+
+      {isError && (
+        <div className="font-semibold text-sm text-red-500 text-center py-5">
+          Failed to load members
+        </div>
+      )}
 
       <ul role="list" className="space-y-3">
         {members.map((member, index) => {
@@ -30,7 +36,7 @@ const RecentMembers = () => {
             <li
               key={index}
               role="listitem"
-              className="flex items-center gap-4 p-3 rounded-lg border border-gray-200 hover:bg-gray-50"
+              className="flex items-center gap-4 p-3 rounded-lg border border-border hover:bg-muted"
             >
               {/* Avatar */}
               <div className="flex-shrink-0">
@@ -47,14 +53,14 @@ const RecentMembers = () => {
 
               {/* Member Details */}
               <div className="flex flex-col">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   {member.userId.name}
                 </p>
-                <p className="text-sm text-gray-500">{member.role.name}</p>
+                <p className="text-sm text-muted-foreground">{member.role.name}</p>
               </div>
 
               {/* Joined Date */}
-              <div className="ml-auto text-sm text-gray-500">
+              <div className="ml-auto text-sm text-muted-foreground">
                 <p>Joined</p>
                 <p>{member.joinedAt ? format(member.joinedAt, "PPP") : null}</p>
               </div>

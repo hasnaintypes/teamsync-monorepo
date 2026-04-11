@@ -47,7 +47,7 @@ const RecentProjects = () => {
             <li
               key={project._id}
               role="listitem"
-              className="shadow-none cursor-pointer border-0 py-2 hover:bg-gray-50 transition-colors ease-in-out "
+              className="shadow-none cursor-pointer border-0 py-2 hover:bg-muted transition-colors ease-in-out "
             >
               <Link
                 to={`/workspace/${workspaceId}/project/${project._id}`}
@@ -68,7 +68,7 @@ const RecentProjects = () => {
                     </p>
                   </div>
                   <div className="ml-auto flex items-center gap-4">
-                    <span className="text-sm text-gray-500">Created by</span>
+                    <span className="text-sm text-muted-foreground">Created by</span>
                     <Avatar className="hidden h-9 w-9 sm:flex">
                       <AvatarImage
                         src={project.createdBy.profilePicture || ""}

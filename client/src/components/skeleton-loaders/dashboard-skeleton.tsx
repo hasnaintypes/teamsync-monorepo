@@ -5,7 +5,7 @@ export function DashboardSkeleton() {
   return (
     <div className="p-4">
       {/* Loader on top */}
-      <div className="absolute inset-0 z-50 flex items-start pt-10 justify-center bg-[rgba(255,255,255,.01)]">
+      <div className="absolute inset-0 z-50 flex items-start pt-10 justify-center bg-background/80">
         <div className="flex items-center space-x-2">
           <Loader size="25px" className="animate-spin" />
           <span className="text-sm font-medium">TeamSync...</span>

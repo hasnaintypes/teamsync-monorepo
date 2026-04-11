@@ -185,7 +185,7 @@ export default function EditTaskForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <div className="w-full max-h-[200px] overflow-y-auto scrollbar">
+                      <div className="w-full max-h-[200px] overflow-y-auto">
                         {membersOptions.map((option) => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}

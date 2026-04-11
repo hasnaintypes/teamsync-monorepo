@@ -16,7 +16,7 @@ import { Loader } from "lucide-react";
 const RecentTasks = () => {
   const workspaceId = useWorkspaceId();
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["all-tasks", workspaceId],
     queryFn: () =>
       getAllTasksQueryFn({
@@ -32,14 +32,20 @@ const RecentTasks = () => {
     <div className="flex flex-col space-y-6">
       {isLoading ? (
         <Loader
-          className="w-8 h-8 
+          className="w-8 h-8
         animate-spin
         place-self-center flex
         "
         />
       ) : null}
 
-      {tasks?.length === 0 && (
+      {isError && (
+        <div className="font-semibold text-sm text-red-500 text-center py-5">
+          Failed to load tasks
+        </div>
+      )}
+
+      {!isError && tasks?.length === 0 && (
         <div
           className="font-semibold
          text-sm text-muted-foreground
@@ -49,7 +55,7 @@ const RecentTasks = () => {
         </div>
       )}
 
-      <ul role="list" className="divide-y divide-gray-200">
+      <ul role="list" className="divide-y divide-border">
         {tasks.map((task) => {
           const name = task?.assignedTo?.name || "";
           const initials = getAvatarFallbackText(name);
@@ -57,17 +63,17 @@ const RecentTasks = () => {
           return (
             <li
               key={task._id}
-              className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+              className="p-4 flex items-center justify-between hover:bg-muted transition-colors"
             >
               {/* Task Info */}
               <div className="flex flex-col space-y-1 flex-grow">
-                <span className="text-sm capitalize text-gray-600 font-medium">
+                <span className="text-sm capitalize text-muted-foreground font-medium">
                   {task.taskCode}
                 </span>
-                <p className="text-md font-semibold text-gray-800 truncate">
+                <p className="text-md font-semibold text-foreground truncate">
                   {task.title}
                 </p>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   Due: {task.dueDate ? format(task.dueDate, "PPP") : null}
                 </span>
               </div>
@@ -113,72 +119,3 @@ const RecentTasks = () => {
 };
 
 export default RecentTasks;
-
-// const RecentTasks = () => {
-//   const tasks = [
-//     {
-//       id: "Task-12",
-//       title: "You can't compress the program without quanti",
-//       date: "December 29, 2024",
-//       assigneeTo: "EM",
-//     },
-//     {
-//       id: "Task-13",
-//       title: "You can't compress the program without quanti",
-//       date: "December 29, 2024",
-//       assigneeTo: "EM",
-//     },
-//     {
-//       id: "Task-14",
-//       title: "You can't compress the program without quanti",
-//       date: "December 29, 2024",
-//       assigneeTo: "EM",
-//     },
-//     {
-//       id: "Task-15",
-//       title: "You can't compress the program without quanti",
-//       date: "December 29, 2024",
-//       assigneeTo: "EM",
-//     },
-//     {
-//       id: "Task-16",
-//       title: "You can't compress the program without quanti",
-//       date: "December 29, 2024",
-//       assigneeTo: "EM",
-//     },
-//   ];
-//   return (
-//     <div className="flex flex-col pt-2">
-//       <ul role="list" className="space-y-2">
-//         {tasks.map((item, index) => (
-//           <li
-//             key={index}
-//             role="listitem"
-//             className="shadow-none border-0 py-2 hover:bg-[#fbfbfb] transition-colors ease-in-out "
-//           >
-//             <div className="grid grid-cols-7 gap-1 p-0">
-//               <div className="shrink">
-//                 <p>{item.id}</p>
-//               </div>
-//               <div className="col-span-2">
-//                 <p className="text-sm font-medium leading-none">{item.title}</p>
-//               </div>
-//               <div>dueDate</div>
-//               <div>Todo</div>
-//               <div>High</div>
-//               <div className="flex items-center gap-4 place-self-end">
-//                 <span className="text-sm text-gray-500">Assigned To</span>
-//                 <Avatar className="hidden h-9 w-9 sm:flex">
-//                   <AvatarImage src="/avatars/01.png" alt="Avatar" />
-//                   <AvatarFallback>{item.assigneeTo}</AvatarFallback>
-//                 </Avatar>
-//               </div>
-//             </div>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
-
-// export default RecentTasks;
