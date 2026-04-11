@@ -45,7 +45,7 @@ src/
 │   ├── auth/            # Authentication components
 │   ├── ui/              # Base UI components (shadcn/ui)
 │   ├── workspace/       # Workspace-specific components
-│   └── resuable/        # Generic reusable components
+│   └── reusable/        # Generic reusable components
 ├── context/             # React context providers
 ├── hooks/               # Custom React hooks
 │   └── api/             # API-specific hooks
