@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import { getColumns } from "./table/columns";
 import { DataTable } from "./table/table";
 import { useParams } from "react-router-dom";
@@ -116,38 +116,47 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
   const projects = data?.projects || [];
   const members = memberData?.members || [];
 
-  //Workspace Projects
-  const projectOptions = projects?.map((project) => {
-    return {
-      label: (
-        <div className="flex items-center gap-1">
-          <span>{project.emoji}</span>
-          <span>{project.name}</span>
-        </div>
-      ),
-      value: project._id,
-    };
-  });
+  const projectOptions = useMemo(
+    () =>
+      projects?.map((project) => ({
+        label: (
+          <div className="flex items-center gap-1">
+            <span>{project.emoji}</span>
+            <span>{project.name}</span>
+          </div>
+        ),
+        value: project._id,
+      })),
+    [projects]
+  );
 
-  // Workspace Memebers
-  const assigneesOptions = members?.map((member) => {
-    const name = member.userId?.name || "Unknown";
-    const initials = getAvatarFallbackText(name);
-    const avatarColor = getAvatarColor(name);
+  const assigneesOptions = useMemo(
+    () =>
+      members?.map((member) => {
+        const name = member.userId?.name || "Unknown";
+        const initials = getAvatarFallbackText(name);
+        const avatarColor = getAvatarColor(name);
 
-    return {
-      label: (
-        <div className="flex items-center space-x-2">
-          <Avatar className="h-7 w-7">
-            <AvatarImage src={member.userId?.profilePicture || ""} alt={name} />
-            <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
-          </Avatar>
-          <span>{name}</span>
-        </div>
-      ),
-      value: member.userId._id,
-    };
-  });
+        return {
+          label: (
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-7 w-7">
+                <AvatarImage
+                  src={member.userId?.profilePicture || ""}
+                  alt={name}
+                />
+                <AvatarFallback className={avatarColor}>
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <span>{name}</span>
+            </div>
+          ),
+          value: member.userId._id,
+        };
+      }),
+    [members]
+  );
 
   const handleFilterChange = (key: keyof Filters, values: string[]) => {
     setFilters({

@@ -5,6 +5,8 @@ import {
 } from "@/constant";
 
 export type loginType = { email: string; password: string };
+// Login/register endpoints return currentWorkspace as a plain ID string,
+// while the /current user endpoint (UserType) returns a populated object.
 export type LoginResponseType = {
   message: string;
   user: {

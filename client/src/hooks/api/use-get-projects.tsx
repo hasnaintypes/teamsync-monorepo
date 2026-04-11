@@ -9,7 +9,7 @@ const useGetProjectsInWorkspaceQuery = ({
   skip = false,
 }: AllProjectPayloadType) => {
   const query = useQuery({
-    queryKey: ["allprojects", workspaceId, pageNumber, pageSize],
+    queryKey: ["all-projects", workspaceId, pageNumber, pageSize],
     queryFn: () =>
       getProjectsInWorkspaceQueryFn({
         workspaceId,

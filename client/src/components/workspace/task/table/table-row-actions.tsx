@@ -11,7 +11,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ConfirmDialog } from "@/components/resuable/confirm-dialog";
+import { ConfirmDialog } from "@/components/reusable/confirm-dialog";
 import { TaskType } from "@/types/api.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useWorkspaceId from "@/hooks/use-workspace-id";

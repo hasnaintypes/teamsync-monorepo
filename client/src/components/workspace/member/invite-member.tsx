@@ -6,7 +6,7 @@ import { useAuthContext } from "@/context/auth-provider";
 import { toast } from "@/hooks/use-toast";
 import { CheckIcon, CopyIcon, Loader } from "lucide-react";
 import { BASE_ROUTE } from "@/routes/common/routePaths";
-import PermissionsGuard from "@/components/resuable/permission-guard";
+import PermissionsGuard from "@/components/reusable/permission-guard";
 import { Permissions } from "@/constant";
 
 const InviteMember = () => {
@@ -16,7 +16,7 @@ const InviteMember = () => {
   const inviteUrl = workspace
     ? `${window.location.origin}${BASE_ROUTE.INVITE_URL.replace(
         ":inviteCode",
-        workspace.inviteCode
+        encodeURIComponent(workspace.inviteCode)
       )}`
     : "";
 

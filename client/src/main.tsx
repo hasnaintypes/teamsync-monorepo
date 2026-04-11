@@ -15,6 +15,7 @@ import { NuqsAdapter } from "nuqs/adapters/react";
 
 import "./index.css";
 import App from "./App.tsx";
+import ErrorBoundary from "./components/error-boundary.tsx";
 import QueryProvider from "./context/query-provider.tsx";
 import { AppProvider } from "./context/app-provider.tsx";
 import { Toaster } from "./components/ui/toaster.tsx";
@@ -27,13 +28,15 @@ import { Toaster } from "./components/ui/toaster.tsx";
  */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <QueryProvider>
-      <AppProvider>
-        <NuqsAdapter>
-          <App />
-        </NuqsAdapter>
-        <Toaster />
-      </AppProvider>
-    </QueryProvider>
+    <ErrorBoundary>
+      <QueryProvider>
+        <AppProvider>
+          <NuqsAdapter>
+            <App />
+          </NuqsAdapter>
+          <Toaster />
+        </AppProvider>
+      </QueryProvider>
+    </ErrorBoundary>
   </StrictMode>
 );

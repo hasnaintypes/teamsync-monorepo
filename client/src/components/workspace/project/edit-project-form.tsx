@@ -83,7 +83,7 @@ export default function EditProjectForm(props: {
         });
 
         queryClient.invalidateQueries({
-          queryKey: ["allprojects", workspaceId],
+          queryKey: ["all-projects", workspaceId],
         });
 
         toast({

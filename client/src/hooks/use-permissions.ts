@@ -10,7 +10,7 @@ const usePermissions = (
 
   useEffect(() => {
     if (user && workspace) {
-      const member = workspace.members.find(
+      const member = workspace.members?.find(
         (member) => member.userId === user._id
       );
       if (member) {

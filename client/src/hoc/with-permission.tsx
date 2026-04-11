@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PermissionType } from "@/constant";
 import { useAuthContext } from "@/context/auth-provider";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const withPermission = (
-  WrappedComponent: React.ComponentType,
+const withPermission = <P extends Record<string, unknown>>(
+  WrappedComponent: React.ComponentType<P>,
   requiredPermission: PermissionType
 ) => {
-  const WithPermission = (props: any) => {
+  const WithPermission = (props: P) => {
     const { user, hasPermission, isLoading } = useAuthContext();
     const navigate = useNavigate();
     const workspaceId = useWorkspaceId();

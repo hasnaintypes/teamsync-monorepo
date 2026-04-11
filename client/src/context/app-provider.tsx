@@ -7,11 +7,12 @@
 import { createContext, useContext, useEffect } from "react";
 import useAuth from "@/hooks/api/use-auth";
 import { UserType } from "@/types/api.type";
+import { CustomError } from "@/types/custom-error.type";
 
 // Define the context shape
 type AppContextType = {
   user?: UserType;
-  error: unknown;
+  error: CustomError | null;
   isLoading: boolean;
   isFetching: boolean;
   refetchAuth: () => void;

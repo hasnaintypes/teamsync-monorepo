@@ -6,6 +6,7 @@
  */
 import axios from "axios";
 import { autoLogout } from "./auth-utils";
+import { logger } from "./logger";
 
 /**
  * The base URL for API requests, loaded from environment variables.
@@ -21,6 +22,9 @@ const options = {
   baseURL,
   withCredentials: true,
   timeout: 10000,
+  headers: {
+    "X-Requested-With": "XMLHttpRequest",
+  },
 };
 
 /**
@@ -38,23 +42,28 @@ API.interceptors.response.use(
     return response;
   },
   async (error) => {
-    const { data, status } = error.response || {};
-    
-    // Log errors only in development
-    if (import.meta.env.DEV) {
-      console.error("API Error:", { data, status, url: error.config?.url });
+    // Handle network errors, timeouts, and other cases where no response exists
+    if (!error.response) {
+      return Promise.reject({
+        message: error.message || "Network error",
+        status: 0,
+      });
     }
-    
+
+    const { data, status } = error.response;
+
+    logger.error("API Error:", { data, status, url: error.config?.url });
+
     // Handle authentication errors with hybrid system
     if (status === 401) {
-      console.log("Authentication failed, performing auto-logout...");
+      logger.log("Authentication failed, performing auto-logout...");
       autoLogout();
       return Promise.reject({
         message: "Authentication failed. Please log in again.",
         status,
       });
     }
-    
+
     return Promise.reject({
       ...data,
       status,

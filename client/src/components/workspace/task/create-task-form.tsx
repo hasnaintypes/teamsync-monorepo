@@ -1,3 +1,4 @@
+import * as React from "react";
 import { z } from "zod";
 import { format } from "date-fns";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,38 +66,47 @@ export default function CreateTaskForm(props: {
   const projects = data?.projects || [];
   const members = memberData?.members || [];
 
-  //Workspace Projects
-  const projectOptions = projects?.map((project) => {
-    return {
-      label: (
-        <div className="flex items-center gap-1">
-          <span>{project.emoji}</span>
-          <span>{project.name}</span>
-        </div>
-      ),
-      value: project._id,
-    };
-  });
+  const projectOptions = React.useMemo(
+    () =>
+      projects?.map((project) => ({
+        label: (
+          <div className="flex items-center gap-1">
+            <span>{project.emoji}</span>
+            <span>{project.name}</span>
+          </div>
+        ),
+        value: project._id,
+      })),
+    [projects]
+  );
 
-  // Workspace Memebers
-  const membersOptions = members?.map((member) => {
-    const name = member.userId?.name || "Unknown";
-    const initials = getAvatarFallbackText(name);
-    const avatarColor = getAvatarColor(name);
+  const membersOptions = React.useMemo(
+    () =>
+      members?.map((member) => {
+        const name = member.userId?.name || "Unknown";
+        const initials = getAvatarFallbackText(name);
+        const avatarColor = getAvatarColor(name);
 
-    return {
-      label: (
-        <div className="flex items-center space-x-2">
-          <Avatar className="h-7 w-7">
-            <AvatarImage src={member.userId?.profilePicture || ""} alt={name} />
-            <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
-          </Avatar>
-          <span>{name}</span>
-        </div>
-      ),
-      value: member.userId._id,
-    };
-  });
+        return {
+          label: (
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-7 w-7">
+                <AvatarImage
+                  src={member.userId?.profilePicture || ""}
+                  alt={name}
+                />
+                <AvatarFallback className={avatarColor}>
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <span>{name}</span>
+            </div>
+          ),
+          value: member.userId._id,
+        };
+      }),
+    [members]
+  );
 
   const formSchema = z.object({
     title: z.string().trim().min(1, {

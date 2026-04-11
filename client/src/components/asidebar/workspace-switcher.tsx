@@ -40,8 +40,7 @@ export function WorkspaceSwitcher() {
   const { data, isPending } = useQuery({
     queryKey: ["userWorkspaces"],
     queryFn: getAllWorkspacesUserIsMemberQueryFn,
-    staleTime: 1,
-    refetchOnMount: true,
+    staleTime: 2 * 60 * 1000, // 2 minutes
   });
 
   const workspaces = data?.workspaces;
