@@ -51,7 +51,7 @@ export const createTaskService = async (
     });
 
     if (!isAssignedUserMember) {
-      throw new Error("Assigned user is not a member of this workspace.");
+      throw new BadRequestException("Assigned user is not a member of this workspace.");
     }
   }
   const task = new TaskModel({
@@ -180,7 +180,8 @@ export const getAllTasksService = async (
   }
 
   if (filters.keyword && filters.keyword !== undefined) {
-    query.title = { $regex: filters.keyword, $options: "i" };
+    const escaped = filters.keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    query.title = { $regex: escaped, $options: "i" };
   }
 
   if (filters.dueDate) {

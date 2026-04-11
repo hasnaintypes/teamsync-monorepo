@@ -1,33 +1,39 @@
 import { ErrorRequestHandler } from "express";
 import { HTTP_STATUS } from "../config/http.config";
+import { AppError } from "../utils/app-error";
+import { ZodError } from "zod";
+import { logger } from "../utils/logger";
 
-/**
- * Global error handler middleware.
- * It catches errors thrown in the application and sends a standardized error response.
- *
- * @param {Error} err - The error object.
- * @param {Request} req - The request object.
- * @param {Response} res - The response object.
- * @param {NextFunction} next - The next middleware function.
- */
-export const errorHandler: ErrorRequestHandler = (err, req, res, next): any => {
-  console.error("Error occurred:", err);
-  console.error("Request URL:", req.originalUrl);
-  console.error("Request Method:", req.method);
-  console.error("Request Body:", req.body);
-  console.error("Request Headers:", req.headers);
-  console.error("Request Path:", req.path);
+export const errorHandler: ErrorRequestHandler = (err, req, res, _next): void => {
+  logger.error(`${req.method} ${req.originalUrl}:`, err.message);
 
   if (err instanceof SyntaxError) {
-    return res.status(HTTP_STATUS.BAD_REQUEST).json({
-      status: "error",
+    res.status(HTTP_STATUS.BAD_REQUEST).json({
       message: "Invalid JSON payload",
+      errorCode: "VALIDATION_ERROR",
     });
+    return;
   }
 
-  return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-    status: "error",
-    message: err.message || "Internal Server Error",
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  if (err instanceof ZodError) {
+    res.status(HTTP_STATUS.BAD_REQUEST).json({
+      message: "Validation failed",
+      errorCode: "VALIDATION_ERROR",
+      errors: err.errors,
+    });
+    return;
+  }
+
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({
+      message: err.message,
+      errorCode: err.errorCode,
+    });
+    return;
+  }
+
+  res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+    message: "Internal Server Error",
+    errorCode: "INTERNAL_SERVER_ERROR",
   });
 };

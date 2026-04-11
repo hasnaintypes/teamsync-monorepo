@@ -123,7 +123,7 @@ export const createTaskController = asyncHandler(
       }
     );
 
-    return res.status(HTTP_STATUS.OK).json({
+    return res.status(HTTP_STATUS.CREATED).json({
       message: "Task created successfully",
       task,
     });

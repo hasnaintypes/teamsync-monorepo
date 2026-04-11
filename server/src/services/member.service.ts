@@ -42,6 +42,10 @@ export const getMemberRoleInWorkspace = async (
 
   const roleName = member.role?.name;
 
+  if (!roleName) {
+    throw new NotFoundException("Member role could not be determined");
+  }
+
   return { role: roleName };
 };
 

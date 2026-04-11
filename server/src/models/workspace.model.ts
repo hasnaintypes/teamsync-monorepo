@@ -50,8 +50,8 @@ export interface WorkspaceDocument extends Document {
   description: string;
   owner: mongoose.Types.ObjectId;
   inviteCode: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const workspaceSchema = new Schema<WorkspaceDocument>(

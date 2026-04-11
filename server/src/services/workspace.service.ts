@@ -35,7 +35,7 @@ export const createWorkspaceService = async (
     throw new NotFoundException("User not found");
   }
 
-  const ownerRole = await RoleModel.findOne({ name: Roles.OWNER });
+  const ownerRole = await RoleModel.findOne({ name: Roles.OWNER }).lean();
 
   if (!ownerRole) {
     throw new NotFoundException("Owner role not found");
@@ -77,6 +77,7 @@ export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
   const memberships = await MemberModel.find({ userId })
     .populate("workspaceId")
     .select("-password")
+    .lean()
     .exec();
 
   // Extract workspace details from memberships
@@ -94,7 +95,7 @@ export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
  * @throws {NotFoundException} When the workspace is not found
  */
 export const getWorkspaceByIdService = async (workspaceId: string) => {
-  const workspace = await WorkspaceModel.findById(workspaceId);
+  const workspace = await WorkspaceModel.findById(workspaceId).lean();
 
   if (!workspace) {
     throw new NotFoundException("Workspace not found");
@@ -102,10 +103,12 @@ export const getWorkspaceByIdService = async (workspaceId: string) => {
 
   const members = await MemberModel.find({
     workspaceId,
-  }).populate("role");
+  })
+    .populate("role")
+    .lean();
 
   const workspaceWithMembers = {
-    ...workspace.toObject(),
+    ...workspace,
     members,
   };
 
@@ -128,7 +131,8 @@ export const getWorkspaceMembersService = async (workspaceId: string) => {
     workspaceId,
   })
     .populate("userId", "name email profilePicture -password")
-    .populate("role", "name");
+    .populate("role", "name")
+    .lean();
 
   const roles = await RoleModel.find({}, { name: 1, _id: 1 })
     .select("-permission")
@@ -187,12 +191,12 @@ export const changeMemberRoleService = async (
   memberId: string,
   roleId: string
 ) => {
-  const workspace = await WorkspaceModel.findById(workspaceId);
+  const workspace = await WorkspaceModel.findById(workspaceId).lean();
   if (!workspace) {
     throw new NotFoundException("Workspace not found");
   }
 
-  const role = await RoleModel.findById(roleId);
+  const role = await RoleModel.findById(roleId).lean();
   if (!role) {
     throw new NotFoundException("Role not found");
   }
@@ -203,10 +207,10 @@ export const changeMemberRoleService = async (
   });
 
   if (!member) {
-    throw new Error("Member not found in the workspace");
+    throw new NotFoundException("Member not found in the workspace");
   }
 
-  member.role = role;
+  member.role = role._id as any;
   await member.save();
 
   return {
@@ -295,9 +299,10 @@ export const deleteWorkspaceService = async (
 
     // Update the user's currentWorkspace if it matches the deleted workspace
     if (user?.currentWorkspace?.equals(workspaceId)) {
-      const memberWorkspace = await MemberModel.findOne({ userId }).session(
-        session
-      );
+      const memberWorkspace = await MemberModel.findOne({
+        userId,
+        workspaceId: { $ne: workspace._id },
+      }).session(session);
       // Update the user's currentWorkspace
       user.currentWorkspace = memberWorkspace
         ? memberWorkspace.workspaceId
