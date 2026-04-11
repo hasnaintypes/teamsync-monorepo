@@ -5,8 +5,9 @@ const AnalyticsCard = (props: {
   title: string;
   value: number;
   isLoading: boolean;
+  isError?: boolean;
 }) => {
-  const { title, value, isLoading } = props;
+  const { title, value, isLoading, isError } = props;
 
   const getArrowIcon = () => {
     if (title === "Overdue Task") {
@@ -39,7 +40,13 @@ const AnalyticsCard = (props: {
       </CardHeader>
       <CardContent className="w-full">
         <div className="text-3xl font-bold">
-          {isLoading ? <Loader className="w-6 h-6 animate-spin" /> : value}
+          {isLoading ? (
+            <Loader className="w-6 h-6 animate-spin" />
+          ) : isError ? (
+            <span className="text-sm text-red-500">Failed to load</span>
+          ) : (
+            value
+          )}
         </div>
       </CardContent>
     </Card>
