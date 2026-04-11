@@ -8,6 +8,7 @@ import { DashboardSkeleton } from "@/components/skeleton-loaders/dashboard-skele
 import { useAppContext } from "@/context/app-provider";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { isAuthRoute } from "./common/routePaths";
+import { logger } from "@/lib/logger";
 
 /**
  * AuthRoute component renders authentication-related child routes.
@@ -25,19 +26,13 @@ const AuthRoute = () => {
 
   if (!user) return <Outlet />;
 
-  // Debug logging to see what's in the user object
-  console.log("AuthRoute - User object:", user);
-  console.log("AuthRoute - CurrentWorkspace:", user.currentWorkspace);
-  console.log("AuthRoute - CurrentWorkspace._id:", user.currentWorkspace?._id);
-
   const workspaceId = user.currentWorkspace?._id;
-  
+
   if (!workspaceId) {
-    console.error("AuthRoute - No workspace ID found, redirecting to workspace creation");
+    logger.error("AuthRoute - No workspace ID found, redirecting to workspace creation");
     return <Navigate to="/workspace/create" replace />;
   }
 
-  console.log("AuthRoute - Navigating to workspace:", workspaceId);
   return <Navigate to={`/workspace/${workspaceId}`} replace />;
 };
 

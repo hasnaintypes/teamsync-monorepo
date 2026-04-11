@@ -19,7 +19,7 @@ export const isAuthRoute = (pathname: string): boolean => {
  * Authentication route paths for sign-in, sign-up, and OAuth callback.
  */
 export const AUTH_ROUTES = {
-  SIGN_IN: "/",
+  SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
   GOOGLE_OAUTH_CALLBACK: "/google/oauth/callback",
 };

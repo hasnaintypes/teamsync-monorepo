@@ -19,7 +19,7 @@ const ProtectedRoute: React.FC = () => {
   if (isLoading) {
     return <DashboardSkeleton />;
   }
-  return user ? <Outlet /> : <Navigate to="/" replace />;
+  return user ? <Outlet /> : <Navigate to="/sign-in" replace />;
 };
 
 export default ProtectedRoute;

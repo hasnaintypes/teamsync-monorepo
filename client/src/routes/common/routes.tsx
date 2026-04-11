@@ -14,6 +14,7 @@ import Settings from "@/page/workspace/Settings";
 import Tasks from "@/page/workspace/Tasks";
 import { AUTH_ROUTES, BASE_ROUTE, PROTECTED_ROUTES } from "./routePaths";
 import InviteUser from "@/page/invite/InviteUser";
+import Landing from "@/page/Landing";
 
 /**
  * Array of authentication route objects for sign-in, sign-up, and OAuth failure.
@@ -42,5 +43,6 @@ export const protectedRoutePaths = [
  * @type {{ path: string; element: JSX.Element }[]}
  */
 export const baseRoutePaths = [
+  { path: "/", element: <Landing /> },
   { path: BASE_ROUTE.INVITE_URL, element: <InviteUser /> },
 ];

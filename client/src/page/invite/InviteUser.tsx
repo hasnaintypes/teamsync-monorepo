@@ -103,7 +103,7 @@ const InviteUser = () => {
                       </Link>
                       <Link
                         className="flex-1 w-full text-base"
-                        to={`/?returnUrl=${returnUrl}`}
+                        to={`/sign-in?returnUrl=${returnUrl}`}
                       >
                         <Button variant="secondary" className="w-full border">
                           Login

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useEffect } from "react";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { UserType, WorkspaceType } from "@/types/api.type";
@@ -7,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 import usePermissions from "@/hooks/use-permissions";
 import { PermissionType } from "@/constant";
 import { useAppContext } from "./app-provider";
+import { CustomError } from "@/types/custom-error.type";
 
 // Define the context shape
 type AuthContextType = {
   user?: UserType;
   workspace?: WorkspaceType;
   hasPermission: (permission: PermissionType) => boolean;
-  error: any;
+  error: CustomError | null;
   isLoading: boolean;
   isFetching: boolean;
   workspaceLoading: boolean;
@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     if (workspaceError) {
       if (workspaceError?.errorCode === "ACCESS_UNAUTHORIZED") {
-        navigate("/"); // Redirect if the user is not a member of the workspace
+        navigate("/sign-in"); // Redirect if the user is not a member of the workspace
       }
     }
   }, [navigate, workspaceError]);
