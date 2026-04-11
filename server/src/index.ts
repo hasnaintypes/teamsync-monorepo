@@ -15,9 +15,11 @@ import session from "express-session";
 
 import "./config/passport.config";
 import passport from "passport";
+import { logger } from "./utils/logger";
 import authRoutes from "./routes/auth.route";
 import userRoutes from "./routes/user.route";
-import requireAuth from "./middlewares/auth.middleware.ts ";
+import requireAuth from "./middlewares/auth.middleware";
+import csrfProtection from "./middlewares/csrf.middleware";
 import workspaceRoutes from "./routes/workspace.route";
 import memberRoutes from "./routes/member.route";
 import projectRoutes from "./routes/project.route";
@@ -44,18 +46,20 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+const isProduction = config.NODE_ENV === "production";
+
 app.use(
   session({
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    name: 'session_id', // Custom session name
+    name: 'session_id',
     cookie: {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      secure: config.NODE_ENV === "production", // HTTPS only in production
-      httpOnly: true, // Prevent XSS attacks
-      sameSite: config.NODE_ENV === "production" ? "none" : "lax", // Allow cross-site cookies in production
-      // Remove domain setting to let browser handle it automatically
+      // sameSite: "none" requires secure: true — both are coupled to isProduction
+      secure: isProduction,
+      httpOnly: true,
+      sameSite: isProduction ? "none" : "lax",
     },
   })
 );
@@ -106,7 +110,7 @@ app.use(
       if (isAllowed) {
         callback(null, true);
       } else {
-        console.log('CORS blocked origin:', origin);
+        logger.warn('CORS blocked origin:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -124,6 +128,9 @@ app.use(
   })
 );
 
+// CSRF protection (after CORS)
+app.use(csrfProtection);
+
 // Swagger API docs
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCssUrl: 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.15.5/swagger-ui.css',
@@ -140,16 +147,6 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.get('/api/docs/swagger.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
-});
-
-// Debug endpoint to check environment variables (remove after debugging)
-app.get('/api/debug/env', (req, res) => {
-  res.json({
-    FRONTEND_ORIGIN: config.FRONTEND_ORIGIN,
-    NODE_ENV: config.NODE_ENV,
-    PORT: config.PORT,
-    BASE_PATH: config.BASE_PATH,
-  });
 });
 
 app.get(
@@ -178,8 +175,8 @@ connectDatabase();
 
 // Start the server
 app.listen(config.PORT, () => {
-  console.log(
-    `[Server] Listening on port ${config.PORT} in ${config.NODE_ENV} mode`
+  logger.info(
+    `Server listening on port ${config.PORT} in ${config.NODE_ENV} mode`
   );
 });
 

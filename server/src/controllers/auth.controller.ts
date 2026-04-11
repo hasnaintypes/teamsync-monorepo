@@ -6,6 +6,7 @@ import { HTTP_STATUS } from "../config/http.config";
 import { registerUserService } from "../services/auth.service";
 import { setAuthCookies, clearAuthCookies } from "../utils/jwt";
 import passport from "passport";
+import { logger } from "../utils/logger";
 
 /**
  * @swagger
@@ -33,7 +34,7 @@ import passport from "passport";
  */
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
-    const user = req.user as any;
+    const user = req.user;
     const currentWorkspace = user?.currentWorkspace;
 
     if (!currentWorkspace || !user) {
@@ -44,14 +45,13 @@ export const googleLoginCallback = asyncHandler(
 
     // Set JWT cookies for hybrid authentication
     setAuthCookies(res, {
-      id: user._id.toString(),
+      id: String(user._id),
       email: user.email,
-      role: user.role
     });
 
     // Extract workspace ID properly (handle both object and string cases)
-    const workspaceId = typeof currentWorkspace === 'object' 
-      ? currentWorkspace._id || currentWorkspace.id 
+    const workspaceId = typeof currentWorkspace === 'object'
+      ? currentWorkspace._id || currentWorkspace.id
       : currentWorkspace;
 
     return res.redirect(
@@ -197,11 +197,9 @@ export const loginController = asyncHandler(
           }
 
           // Set JWT cookies for hybrid authentication
-          const userObj = user as any;
           setAuthCookies(res, {
-            id: userObj._id.toString(),
-            email: userObj.email,
-            role: userObj.role
+            id: String(user._id),
+            email: user.email,
           });
 
           return res.status(HTTP_STATUS.OK).json({
@@ -264,7 +262,7 @@ export const logOutController = asyncHandler(
       // Destroy session directly without passport logout
       req.session.destroy((err) => {
         if (err) {
-          console.error("Session destruction error:", err);
+          logger.error("Session destruction error:", err);
           // Don't return error - cookies are already cleared
         }
       });

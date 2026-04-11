@@ -11,6 +11,7 @@ import {
 } from "../utils/app-error";
 import MemberModel from "../models/member.model";
 import { ProviderEnum } from "../enums/auth-provider.enum";
+import { logger } from "../utils/logger";
 
 /**
  * NOTE: This service uses Mongoose sessions and transactions to ensure atomicity and consistency
@@ -41,9 +42,6 @@ const loginOrCreateAccountService = async (data: {
 
   try {
     session.startTransaction();
-    console.log(
-      "[AuthService][loginOrCreateAccountService] Started session for login or account creation"
-    );
 
     let user = await UserModel.findOne({ email }).session(session);
 
@@ -92,15 +90,12 @@ const loginOrCreateAccountService = async (data: {
     }
     await session.commitTransaction();
     session.endSession();
-    console.log(
-      "[AuthService][loginOrCreateAccountService] Ended session and committed transaction"
-    );
 
     return { user };
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    console.error(
+    logger.error(
       "[AuthService][loginOrCreateAccountService] Transaction aborted due to error:",
       error
     );
@@ -130,9 +125,6 @@ const registerUserService = async (body: {
   const session = await mongoose.startSession();
 
   try {
-    console.log(
-      "[AuthService][registerUserService] Started session for user registration"
-    );
     session.startTransaction();
 
     const existingUser = await UserModel.findOne({ email }).session(session);
@@ -183,9 +175,6 @@ const registerUserService = async (body: {
 
     await session.commitTransaction();
     session.endSession();
-    console.log(
-      "[AuthService][registerUserService] Ended session and committed transaction"
-    );
 
     return {
       userId: user._id,
@@ -194,7 +183,7 @@ const registerUserService = async (body: {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    console.error(
+    logger.error(
       "[AuthService][registerUserService] Transaction aborted due to error:",
       error
     );

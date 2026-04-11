@@ -35,18 +35,6 @@ export const setAuthCookies = (res: Response, user: JWTPayload): void => {
     path: '/'
   });
 
-  // Set a non-httpOnly cookie for frontend access (encrypted payload only)
-  res.cookie('auth_user', JSON.stringify({
-    id: user.id,
-    email: user.email,
-    role: user.role
-  }), {
-    httpOnly: false,
-    secure: config.NODE_ENV === 'production',
-    sameSite: config.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
-    path: '/'
-  });
 };
 
 export const clearAuthCookies = (res: Response): void => {
@@ -58,5 +46,4 @@ export const clearAuthCookies = (res: Response): void => {
   } as const;
 
   res.clearCookie('auth_token', cookieOptions);
-  res.clearCookie('auth_user', { ...cookieOptions, httpOnly: false });
 };

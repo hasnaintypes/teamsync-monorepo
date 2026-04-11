@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { UnauthorizedException } from "../utils/app-error";
 import { verifyJWT } from "../utils/jwt";
 import UserModel from "../models/user.model";
+import { logger } from "../utils/logger";
 
 /**
  * Middleware to ensure user is authenticated.
@@ -47,7 +48,7 @@ export const requireAuth = async (
     next();
   } catch (error) {
     // Log the specific error for debugging in production
-    console.error('[Auth Middleware] Error:', {
+    logger.error('[Auth Middleware] Error:', {
       error: error instanceof Error ? error.message : error,
       hasToken: !!req.cookies.auth_token,
       NODE_ENV: process.env.NODE_ENV,
@@ -57,18 +58,7 @@ export const requireAuth = async (
     if (error instanceof UnauthorizedException) {
       throw error;
     }
-    
-    // Clear invalid cookies with proper options
-    const cookieOptions = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      path: '/'
-    } as const;
-    
-    res.clearCookie('auth_token', cookieOptions);
-    res.clearCookie('auth_user', { ...cookieOptions, httpOnly: false });
-    
+
     throw new UnauthorizedException("Invalid authentication token. Please log in again.");
   }
 };

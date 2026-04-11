@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { config } from "./app.config";
+import { logger } from "../utils/logger";
 
 /**
  * Connects to the MongoDB database using Mongoose.
@@ -10,9 +11,9 @@ import { config } from "./app.config";
 const connectDatabase = async () => {
   try {
     await mongoose.connect(config.MONGO_URI);
-    console.log("[Database] Connected to MongoDB database");
+    logger.info("Connected to MongoDB database");
   } catch (error) {
-    console.error("[Database] Error connecting to MongoDB database");
+    logger.error("Error connecting to MongoDB database");
     process.exit(1);
   }
 };

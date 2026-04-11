@@ -5,6 +5,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 
 import { config } from "./app.config";
 import { NotFoundException } from "../utils/app-error";
+import { logger } from "../utils/logger";
 import { ProviderEnum } from "../enums/auth-provider.enum";
 import {
   loginOrCreateAccountService,
@@ -30,10 +31,13 @@ passport.use(
     async (req: Request, accessToken, refreshToken, profile, done) => {
       try {
         const { email, sub: googleId, picture } = profile._json;
-        console.log("[Passport][GoogleStrategy] Received profile:", profile);
-        console.log("[Passport][GoogleStrategy] Google ID:", googleId);
         if (!googleId) {
           throw new NotFoundException("Google ID (sub) is missing");
+        }
+        if (!email) {
+          throw new NotFoundException(
+            "Email is required for authentication"
+          );
         }
 
         const { user } = await loginOrCreateAccountService({
@@ -43,9 +47,9 @@ passport.use(
           picture: picture,
           email: email,
         });
-        done(null, user);
+        done(null, user as Express.User);
       } catch (error) {
-        console.error(
+        logger.error(
           "[Passport][GoogleStrategy] Error during authentication:",
           error
         );
@@ -65,17 +69,19 @@ passport.use(
     async (email, password, done) => {
       try {
         const user = await verifyUserService({ email, password });
-        return done(null, user);
-      } catch (error: any) {
-        console.error(
+        return done(null, user as Express.User);
+      } catch (error) {
+        logger.error(
           "[Passport][LocalStrategy] Error during authentication:",
           error
         );
-        return done(error, false, { message: error?.message });
+        return done(error, false, {
+          message: error instanceof Error ? error.message : "Authentication failed",
+        });
       }
     }
   )
 );
 
-passport.serializeUser((user: any, done) => done(null, user));
-passport.deserializeUser((user: any, done) => done(null, user));
+passport.serializeUser((user: Express.User, done) => done(null, user));
+passport.deserializeUser((user: Express.User, done) => done(null, user));
