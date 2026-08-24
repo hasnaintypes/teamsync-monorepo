@@ -1,6 +1,7 @@
 import "dotenv/config";
 import express, { Request, Response } from "express";
 import cors from "cors";
+import mongoose from "mongoose";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/error-handler.middleware";
@@ -28,8 +29,28 @@ import taskRoutes from "./routes/task.route";
 const app = express();
 const BASE_PATH = config.BASE_PATH;
 
-// Trust proxy for Railway deployment
+// Trust proxy (Render/Railway run the app behind a reverse proxy)
 app.set('trust proxy', 1);
+
+// Health check endpoint — placed before all other middleware (helmet, rate
+// limiting, sessions, CORS) so it always responds quickly and is never
+// throttled. Used by Render's healthCheckPath to determine service liveness.
+const dbReadyStateLabels: Record<number, string> = {
+  0: "disconnected",
+  1: "connected",
+  2: "connecting",
+  3: "disconnecting",
+};
+
+app.get("/health", (req: Request, res: Response) => {
+  const dbReadyState = mongoose.connection.readyState;
+  res.status(HTTP_STATUS.OK).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    database: dbReadyStateLabels[dbReadyState] ?? "unknown",
+  });
+});
 
 app.use(helmet());
 

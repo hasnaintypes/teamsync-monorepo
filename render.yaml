@@ -7,10 +7,10 @@ services:
     branch: main
     buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm turbo run build --filter=team-sync-server
     startCommand: pnpm --filter team-sync-server start
-    healthCheckPath: /
+    healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
-        value: 20
+        value: 22
       - key: NODE_ENV
         value: production
       - key: PORT

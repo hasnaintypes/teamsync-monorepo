@@ -91,6 +91,21 @@ This application is configured for deployment on [Render](https://render.com/) v
 
 See `apps/server/.env.example` for the complete list of required environment variables for production deployment.
 
+### Health Check
+
+The server exposes a lightweight `GET /health` endpoint (outside `BASE_PATH`, ahead of all other middleware) used by Render's `healthCheckPath` to determine service liveness:
+
+```json
+{
+  "status": "ok",
+  "uptime": 123.45,
+  "timestamp": "2026-01-01T00:00:00.000Z",
+  "database": "connected"
+}
+```
+
+`database` reflects the current Mongoose connection state (`connected`, `connecting`, `disconnecting`, or `disconnected`).
+
 ## API Documentation
 
 ### Swagger UI
