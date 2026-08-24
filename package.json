@@ -1,0 +1,28 @@
+﻿{
+  "name": "teamsync-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "TeamSync monorepo — client (React/Vite) and server (Express/Mongoose), orchestrated with Turborepo + pnpm workspaces.",
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "start": "turbo run start",
+    "seed": "turbo run seed --filter=team-sync-server",
+    "seed:roles": "turbo run seed:roles --filter=team-sync-server"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "esbuild"
+    ]
+  }
+}
