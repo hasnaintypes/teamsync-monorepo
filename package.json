@@ -1,11 +1,11 @@
-﻿{
+{
   "name": "teamsync-monorepo",
   "private": true,
   "version": "1.0.0",
   "description": "TeamSync monorepo — client (React/Vite) and server (Express/Mongoose), orchestrated with Turborepo + pnpm workspaces.",
   "packageManager": "pnpm@10.17.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "dev": "turbo run dev",

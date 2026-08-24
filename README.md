@@ -134,7 +134,7 @@ To get a local copy of TeamSync running, follow these steps.
 
 Make sure you have the following installed on your machine:
 
-  - Node.js v20 or higher (see `.nvmrc`)
+  - Node.js v22 or higher (see `.nvmrc`)
   - [pnpm](https://pnpm.io/) v10 or higher
   - A MongoDB instance (local or hosted with MongoDB Atlas)
 

@@ -34,7 +34,7 @@ team-sync-server is a robust, scalable backend API for team and project manageme
 
 ### Prerequisites
 
-- Node.js >= 20.x (see root `.nvmrc`)
+- Node.js >= 22.x (see root `.nvmrc`)
 - [pnpm](https://pnpm.io/) >= 10.x
 - MongoDB instance (local or MongoDB Atlas)
 

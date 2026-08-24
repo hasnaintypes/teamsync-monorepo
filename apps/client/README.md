@@ -104,7 +104,7 @@ src/
 
 ### Prerequisites
 
-- Node.js (v20 or higher, see root `.nvmrc`)
+- Node.js (v22 or higher, see root `.nvmrc`)
 - [pnpm](https://pnpm.io/) (v10 or higher)
 
 ### Installation

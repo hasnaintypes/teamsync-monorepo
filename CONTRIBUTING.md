@@ -52,7 +52,7 @@ git remote add upstream https://github.com/hasnaintypes/teamsync-monorepo.git
 
 ### 2. Set Up the Development Environment
 
-TeamSync is a [Turborepo](https://turbo.build/repo) monorepo (pnpm workspaces) containing the `apps/client` frontend and `apps/server` backend. Prerequisites: Node.js v20+ (see `.nvmrc`) and [pnpm](https://pnpm.io/) v10+.
+TeamSync is a [Turborepo](https://turbo.build/repo) monorepo (pnpm workspaces) containing the `apps/client` frontend and `apps/server` backend. Prerequisites: Node.js v22+ (see `.nvmrc`) and [pnpm](https://pnpm.io/) v10+.
 
 **Install Dependencies**
 From the root of the repository, a single install sets up both workspaces:
