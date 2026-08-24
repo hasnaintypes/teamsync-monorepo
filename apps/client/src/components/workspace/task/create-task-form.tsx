@@ -63,12 +63,9 @@ export default function CreateTaskForm(props: {
 
   const { data: memberData } = useGetWorkspaceMembers(workspaceId);
 
-  const projects = data?.projects || [];
-  const members = memberData?.members || [];
-
   const projectOptions = React.useMemo(
     () =>
-      projects?.map((project) => ({
+      (data?.projects || []).map((project) => ({
         label: (
           <div className="flex items-center gap-1">
             <span>{project.emoji}</span>
@@ -77,12 +74,12 @@ export default function CreateTaskForm(props: {
         ),
         value: project._id,
       })),
-    [projects]
+    [data?.projects]
   );
 
   const membersOptions = React.useMemo(
     () =>
-      members?.map((member) => {
+      (memberData?.members || []).map((member) => {
         const name = member.userId?.name || "Unknown";
         const initials = getAvatarFallbackText(name);
         const avatarColor = getAvatarColor(name);
@@ -105,7 +102,7 @@ export default function CreateTaskForm(props: {
           value: member.userId._id,
         };
       }),
-    [members]
+    [memberData?.members]
   );
 
   const formSchema = z.object({

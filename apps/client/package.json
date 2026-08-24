@@ -6,12 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b --force && vite build",
-    "build:ignore-errors": "vite build",
     "lint": "eslint . --max-warnings=0",
-    "lint:ignore": "eslint . || true",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "type-check:ignore": "tsc --noEmit || true"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",

@@ -32,7 +32,7 @@ import { Permissions } from "@/constant";
 import PermissionsGuard from "../reusable/permission-guard";
 import { useState } from "react";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
-import { PaginationType } from "@/types/api.type";
+import { PaginationType, ProjectType } from "@/types/api.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteProjectMutationFn } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
@@ -47,7 +47,8 @@ export function NavProjects() {
 
   const { isMobile } = useSidebar();
   const { onOpen } = useCreateProjectDialog();
-  const { context, open, onOpenDialog, onCloseDialog } = useConfirmDialog();
+  const { context, open, onOpenDialog, onCloseDialog } =
+    useConfirmDialog<ProjectType>();
 
   const [pageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);

@@ -22,7 +22,6 @@ const badgeVariants = cva(
         [TaskStatusEnum.IN_REVIEW]: "bg-purple-100 text-purple-500 dark:bg-purple-900/40 dark:text-purple-300",
         [TaskStatusEnum.DONE]: "bg-green-100 text-green-600 dark:bg-green-900/40 dark:text-green-300",
         [TaskPriorityEnum.HIGH]: "bg-orange-100 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300",
-        [TaskPriorityEnum.URGENT]: "bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-300",
         [TaskPriorityEnum.MEDIUM]: "bg-yellow-100 text-yellow-600 dark:bg-yellow-900/40 dark:text-yellow-300",
         [TaskPriorityEnum.LOW]: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300",
       },

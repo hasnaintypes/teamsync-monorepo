@@ -113,12 +113,9 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
 
   const { data: memberData } = useGetWorkspaceMembers(workspaceId);
 
-  const projects = data?.projects || [];
-  const members = memberData?.members || [];
-
   const projectOptions = useMemo(
     () =>
-      projects?.map((project) => ({
+      (data?.projects || []).map((project) => ({
         label: (
           <div className="flex items-center gap-1">
             <span>{project.emoji}</span>
@@ -127,12 +124,12 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
         ),
         value: project._id,
       })),
-    [projects]
+    [data?.projects]
   );
 
   const assigneesOptions = useMemo(
     () =>
-      members?.map((member) => {
+      (memberData?.members || []).map((member) => {
         const name = member.userId?.name || "Unknown";
         const initials = getAvatarFallbackText(name);
         const avatarColor = getAvatarColor(name);
@@ -155,7 +152,7 @@ const DataTableFilterToolbar: FC<DataTableFilterToolbarProps> = ({
           value: member.userId._id,
         };
       }),
-    [members]
+    [memberData?.members]
   );
 
   const handleFilterChange = (key: keyof Filters, values: string[]) => {

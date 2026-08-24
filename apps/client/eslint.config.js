@@ -23,6 +23,20 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
+      ],
+    },
+  },
+  {
+    // shadcn/ui primitives intentionally co-locate cva variant helpers and
+    // other non-component exports alongside components; this is the
+    // standard shadcn/ui pattern and safe to exempt from react-refresh's
+    // "only export components" constraint.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
     },
   },
 )

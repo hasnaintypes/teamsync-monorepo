@@ -100,32 +100,31 @@ src/
 
 ## Environment Setup
 
+> **Note:** This package lives at `apps/client` inside the [teamsync-monorepo](https://github.com/hasnaintypes/teamsync-monorepo) Turborepo workspace. Dependencies are installed once from the repository root via `pnpm install`.
+
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm or yarn package manager
+- Node.js (v20 or higher, see root `.nvmrc`)
+- [pnpm](https://pnpm.io/) (v10 or higher)
 
 ### Installation
 
-1. Clone the repository and navigate to the client directory:
+1. Clone the monorepo and install all workspace dependencies from the root:
 
 ```bash
-cd client
+git clone https://github.com/hasnaintypes/teamsync-monorepo.git
+cd teamsync-monorepo
+pnpm install
 ```
 
-2. Install dependencies:
+2. Environment Configuration:
 
 ```bash
-npm install
-```
-
-3. Environment Configuration:
-
-```bash
+cd apps/client
 cp .env.example .env
 ```
 
-4. Configure environment variables in `.env`:
+3. Configure environment variables in `.env`:
 
 ```env
 VITE_API_BASE_URL="http://localhost:8000/api"
@@ -133,30 +132,23 @@ VITE_API_BASE_URL="http://localhost:8000/api"
 
 ### Development Commands
 
+Run these via `pnpm --filter team-sync-client <script>` from the repo root, or directly with `pnpm run <script>` from within `apps/client`:
+
 ```bash
 # Start development server
-npm run dev
+pnpm --filter team-sync-client dev
 
-# Build for production (with type checking)
-npm run build
-
-# Build for production (ignore errors)
-npm run build:ignore-errors
+# Build for production (type-checks with tsc -b, then vite build)
+pnpm --filter team-sync-client build
 
 # Preview production build
-npm run preview
+pnpm --filter team-sync-client preview
 
-# Run ESLint (strict)
-npm run lint
-
-# Run ESLint (ignore errors)
-npm run lint:ignore
+# Run ESLint (--max-warnings=0)
+pnpm --filter team-sync-client lint
 
 # Type check only
-npm run type-check
-
-# Type check (ignore errors)
-npm run type-check:ignore
+pnpm --filter team-sync-client type-check
 ```
 
 ## API Integration
@@ -257,7 +249,7 @@ Built on Radix UI primitives with custom styling:
 ### Build Process
 
 ```bash
-npm run build
+pnpm --filter team-sync-client build
 ```
 
 ### Production Considerations
@@ -267,12 +259,9 @@ npm run build
 - Asset optimization
 - Browser compatibility
 
-### Hosting Options
+### Hosting
 
-- Static site hosting (Vercel, Netlify)
-- CDN deployment
-- Docker containerization
-- Reverse proxy configuration
+Deployed on **[Vercel](https://vercel.com/)** with the project's Root Directory set to `apps/client` (see `apps/client/vercel.json`, which runs the build via `pnpm turbo run build --filter=team-sync-client` from the monorepo root for Turborepo caching).
 
 ## Contributing
 

@@ -1,11 +1,5 @@
 import { useMemo } from "react";
-import { Bar, BarChart, XAxis, YAxis, Cell, LabelList } from "recharts";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartConfig } from "@/components/ui/chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TaskType } from "@/types/api.type";
 

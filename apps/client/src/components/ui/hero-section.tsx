@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import type { Variants } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { HeroHeader } from "@/components/ui/navbar";
 
-const transitionVariants = {
+const transitionVariants: { item: Variants } = {
   item: {
     hidden: {
       opacity: 0,
