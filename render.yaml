@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: team-sync-server
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm turbo run build --filter=team-sync-server
+    startCommand: pnpm --filter team-sync-server start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: MONGO_URI
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: SESSION_EXPIRES_IN
+        value: 1d
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CALLBACK_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: FRONTEND_GOOGLE_CALLBACK_URL
+        sync: false
