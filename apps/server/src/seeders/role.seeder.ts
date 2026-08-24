@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import connectDatabase from "../config/database.config";
 import RoleModel, { RoleDocument } from "../models/role.model";
 import { RolePermissions } from "../utils/role-permission";
-import { Roles } from "../enums/role.enum";
 
 export const seedRoles = async (
   session?: mongoose.ClientSession

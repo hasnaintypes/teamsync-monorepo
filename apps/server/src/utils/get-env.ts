@@ -12,7 +12,6 @@ export const getEnv = (key: string, defaultValue: string = ""): string => {
       return defaultValue;
     }
     // Cannot use logger here — logger depends on env being loaded
-    // eslint-disable-next-line no-console
     console.error(`[Env] Environment variable ${key} is not set`);
     throw new Error(`Environment variable ${key} is not set`);
   }

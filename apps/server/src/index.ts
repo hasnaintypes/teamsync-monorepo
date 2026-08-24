@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
@@ -151,7 +151,7 @@ app.get('/api/docs/swagger.json', (req, res) => {
 
 app.get(
   `/`,
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response) => {
     res.status(HTTP_STATUS.OK).json({
       message: "Welcome to the Team Sync Server",
       version: "1.0.0",

@@ -70,13 +70,13 @@ const runMasterSeeder = async () => {
       const workspaces = await seedWorkspaces(session, users, roles);
       console.log("3️⃣  Workspaces seeded successfully!\n");
 
-      const members = await seedMembers(session, users, workspaces, roles);
+      await seedMembers(session, users, workspaces, roles);
       console.log("4️⃣  Members seeded successfully!\n");
 
       const projects = await seedProjects(session, workspaces, users);
       console.log("5️⃣  Projects seeded successfully!\n");
 
-      const tasks = await seedTasks(session, projects, workspaces, users);
+      await seedTasks(session, projects, workspaces, users);
       console.log("6️⃣  Tasks seeded successfully!\n");
 
       await session.commitTransaction();

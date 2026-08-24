@@ -6,7 +6,7 @@ import { RoleDocument } from "../models/role.model";
 export const seedWorkspaces = async (
   session: mongoose.ClientSession,
   users: UserDocument[],
-  roles: { [key: string]: RoleDocument }
+  _roles: { [key: string]: RoleDocument }
 ): Promise<WorkspaceDocument[]> => {
   console.log("🏢 Seeding workspaces...");
 

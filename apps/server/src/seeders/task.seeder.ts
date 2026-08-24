@@ -8,7 +8,7 @@ import { TaskStatusEnum, TaskPriorityEnum } from "../enums/task.enum";
 export const seedTasks = async (
   session: mongoose.ClientSession,
   projects: ProjectDocument[],
-  workspaces: WorkspaceDocument[],
+  _workspaces: WorkspaceDocument[],
   users: UserDocument[]
 ): Promise<TaskDocument[]> => {
   console.log("✅ Seeding tasks...");
@@ -474,11 +474,6 @@ export const seedTasks = async (
 
   for (const projectTasks of tasksData) {
     const project = projects[projectTasks.projectIndex];
-    const projectWorkspace = workspaces.find(
-      (w: WorkspaceDocument) =>
-        (w._id as mongoose.Types.ObjectId).toString() ===
-        project.workspace.toString()
-    );
 
     for (const taskData of projectTasks.tasks) {
       const newTask = new TaskModel({

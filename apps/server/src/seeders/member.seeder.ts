@@ -14,30 +14,6 @@ export const seedMembers = async (
 
   const createdMembers: MemberDocument[] = [];
 
-  // Define user roles (first user is owner, next 6 are admins, rest are members)
-  const userRoles = [
-    "OWNER", // Alex Thompson
-    "ADMIN",
-    "ADMIN",
-    "ADMIN",
-    "ADMIN",
-    "ADMIN",
-    "ADMIN", // Sarah Chen, Michael Rodriguez, Emily Watson, David Kim, Lisa Anderson, James Wilson
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER", // Rachel Green, John Smith, Maria Garcia, Robert Johnson, Jennifer Brown, William Davis, Jessica Miller
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER",
-    "MEMBER", // Christopher Taylor, Ashley Martinez, Daniel Jackson, Amanda White, Matthew Harris, Stephanie Clark
-  ];
-
   // Add members to workspaces
   for (
     let workspaceIndex = 0;

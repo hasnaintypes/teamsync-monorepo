@@ -8,6 +8,7 @@ import { BadRequestException, NotFoundException } from "../utils/app-error";
 import TaskModel from "../models/task.model";
 import { TaskStatusEnum } from "../enums/task.enum";
 import ProjectModel from "../models/project.model";
+import { RoleDocument } from "../models/role.model";
 
 /**
  * Creates a new workspace for the specified user.
@@ -210,7 +211,7 @@ export const changeMemberRoleService = async (
     throw new NotFoundException("Member not found in the workspace");
   }
 
-  member.role = role._id as any;
+  member.role = role._id as unknown as RoleDocument;
   await member.save();
 
   return {

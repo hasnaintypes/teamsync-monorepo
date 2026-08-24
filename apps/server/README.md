@@ -30,63 +30,66 @@ team-sync-server is a robust, scalable backend API for team and project manageme
 
 ## Getting Started
 
+> **Note:** This package lives at `apps/server` inside the [teamsync-monorepo](https://github.com/hasnaintypes/teamsync-monorepo) Turborepo workspace. Dependencies are installed once from the repository root via `pnpm install`; this README documents commands that can be run either from the repo root (using `pnpm --filter team-sync-server <script>` or `pnpm turbo run <script> --filter=team-sync-server`) or from within `apps/server` directly.
+
 ### Prerequisites
 
-- Node.js >= 18.x
+- Node.js >= 20.x (see root `.nvmrc`)
+- [pnpm](https://pnpm.io/) >= 10.x
 - MongoDB instance (local or MongoDB Atlas)
 
 ### Local Development
 
-1. Clone the repository:
+1. Clone the monorepo:
    ```sh
-   git clone https://github.com/hasnaintype/teamsync-server.git
-   cd teamsync-server
+   git clone https://github.com/hasnaintypes/teamsync-monorepo.git
+   cd teamsync-monorepo
    ```
 
-2. Install dependencies:
+2. Install dependencies from the repository root (installs all workspaces, including this one):
    ```sh
-   npm install
+   pnpm install
    ```
 
 3. Configure environment variables:
-   - Copy `.env.example` to `.env` and fill in required values (MongoDB URI, session secret, etc.)
+   - In `apps/server`, copy `.env.example` to `.env` and fill in required values (MongoDB URI, session secret, etc.)
 
-4. Run database seeders (optional):
+4. Run database seeders (optional), from the repo root:
    ```sh
-   npm run seed:roles    # Seed user roles
-   npm run seed          # Seed all data
+   pnpm --filter team-sync-server run seed:roles    # Seed user roles
+   pnpm --filter team-sync-server run seed          # Seed all data
    ```
 
 ### Running the Server
 
-**Development:**
+**Development** (from repo root):
 ```sh
-npm run dev
+pnpm --filter team-sync-server dev
 ```
 
 **Production:**
 ```sh
-npm run build
-npm start
+pnpm --filter team-sync-server build
+pnpm --filter team-sync-server start
 ```
 
-The server will start on the configured port (default: 5000).
+The server will start on the configured port (default: `8000`, see `.env.example`).
 
 ## Deployment
 
-### Railway Deployment
+### Render Deployment
 
-This application is configured for deployment on Railway. See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+This application is configured for deployment on [Render](https://render.com/) via the `render.yaml` Blueprint at the repository root. The Blueprint builds and starts only the `team-sync-server` workspace using Turborepo filters, so the whole monorepo can be deployed as a single Render Blueprint without a separate Root Directory setting.
 
-**Quick Deploy to Railway:**
+**Quick Deploy to Render:**
 1. Fork this repository
-2. Connect your GitHub repo to Railway
-3. Configure environment variables in Railway dashboard
-4. Deploy automatically triggers on push to main branch
+2. In the Render dashboard, create a new Blueprint pointing at your fork (Render will detect `render.yaml` at the repo root)
+3. Fill in the secret environment variables flagged `sync: false` in `render.yaml` (Mongo URI, session secret, Google OAuth credentials, frontend origin, etc.)
+4. Render deploys automatically on push to `main`
 
 ### Environment Variables
 
-See `.env.production` for a complete list of required environment variables for production deployment.
+See `apps/server/.env.example` for the complete list of required environment variables for production deployment.
 
 ## API Documentation
 
@@ -96,12 +99,12 @@ Interactive API documentation is available at:
 
 **Development:**
 ```
-http://localhost:5000/api/docs
+http://localhost:8000/api/docs
 ```
 
-**Production (Railway):**
+**Production (Render):**
 ```
-https://your-app-name.railway.app/api/docs
+https://your-app-name.onrender.com/api/docs
 ```
 
 All endpoints, request/response schemas, and authentication details are documented.
@@ -117,7 +120,7 @@ A comprehensive Postman collection is available for testing all API endpoints:
 ## Folder Structure
 
 ```
-server/
+apps/server/
 ├── src/
 │   ├── controllers/      # Route handlers for API endpoints
 │   ├── models/           # Mongoose models
@@ -130,9 +133,24 @@ server/
 │   ├── config/           # App, database, and Swagger config
 │   └── seeders/          # Initial data seeders
 ├── package.json
+├── eslint.config.mjs
 ├── tsconfig.json
 └── README.md
 ```
+
+## Available Scripts
+
+Run these via `pnpm --filter team-sync-server <script>` from the repo root, or directly with `pnpm run <script>` from within `apps/server`:
+
+| Script | Description |
+| --- | --- |
+| `dev` | Start the dev server with live reload (`ts-node-dev`) |
+| `build` | Type-check and compile TypeScript to `dist/` |
+| `start` | Run the compiled server from `dist/index.js` |
+| `type-check` | Run `tsc --noEmit` (strict mode) |
+| `lint` | Run ESLint (`--max-warnings=0`) |
+| `seed` | Seed all reference/demo data |
+| `seed:roles` | Seed roles only |
 
 ## Contributing
 
@@ -144,4 +162,4 @@ This project is licensed under the MIT License.
 
 ## Author
 
-Maintained by [hasnaintype](https://github.com/hasnaintype)
+Maintained by [hasnaintypes](https://github.com/hasnaintypes)

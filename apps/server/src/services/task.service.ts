@@ -159,7 +159,7 @@ export const getAllTasksService = async (
     pageNumber: number;
   }
 ) => {
-  const query: Record<string, any> = {
+  const query: Record<string, unknown> = {
     workspace: workspaceId,
   };
 
