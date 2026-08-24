@@ -25,7 +25,7 @@ TeamSync is a powerful monorepo solution featuring a modern React frontend and a
 
 TeamSync is a full-stack platform engineered to streamline project management and team collaboration. It offers a complete solution for organizing teams, projects, and tasks with key features like **role-based access control** and real-time analytics, ensuring an efficient and modern user experience.
 
-TeamSync's architecture is a monorepo that encapsulates both the client-side and server-side applications, allowing for seamless development and deployment. The codebase is fully type-safe, with comprehensive validation and clear API documentation, which enhances the developer experience.
+TeamSync's architecture is a [Turborepo](https://turbo.build/repo)-powered monorepo (using pnpm workspaces) that encapsulates both the client-side and server-side applications, allowing for seamless development, caching, and deployment. The codebase is fully type-safe, with comprehensive validation and clear API documentation, which enhances the developer experience.
 
 -----
 
@@ -88,34 +88,38 @@ TeamSync is built as a monorepo, leveraging a modern and powerful set of technol
 
 ## Folder Structure
 
-The monorepo is divided into two primary directories, `client` and `server`, each with its own structured architecture.
+The monorepo is a Turborepo workspace with all applications under `apps/`.
 
 ```
 .
-├── client/                      # Frontend application
-│   ├── public/                  # Public assets
-│   ├── src/
-│   │   ├── components/          # Reusable UI components
-│   │   ├── hooks/               # Custom React hooks
-│   │   ├── lib/                 # Utility functions and configurations
-│   │   ├── pages/               # Main application pages
-│   │   ├── services/            # API services
-│   │   └── types/               # TypeScript type definitions
-│   └── vite.config.ts
+├── apps/
+│   ├── client/                  # Frontend application (React + Vite)
+│   │   ├── public/              # Public assets
+│   │   ├── src/
+│   │   │   ├── components/      # Reusable UI components
+│   │   │   ├── hooks/           # Custom React hooks
+│   │   │   ├── lib/             # Utility functions and configurations
+│   │   │   ├── page/            # Main application pages
+│   │   │   └── types/           # TypeScript type definitions
+│   │   └── vite.config.ts
+│   │
+│   └── server/                  # Backend application (Express + MongoDB)
+│       ├── src/
+│       │   ├── controllers/     # API endpoint handlers
+│       │   ├── models/          # Mongoose database models
+│       │   ├── routes/          # Express route definitions
+│       │   ├── services/        # Business logic and data access
+│       │   ├── middlewares/     # Custom Express middleware
+│       │   ├── config/          # Application and database configuration
+│       │   └── validation/      # Zod validation schemas
+│       └── tsconfig.json
 │
-├── server/                      # Backend application
-│   ├── src/
-│   │   ├── controllers/         # API endpoint handlers
-│   │   ├── models/              # Mongoose database models
-│   │   ├── routes/              # Express route definitions
-│   │   ├── services/            # Business logic and data access
-│   │   ├── middleware/          # Custom Express middleware
-│   │   ├── config/              # Application and database configuration
-│   │   └── validation/          # Zod validation schemas
-│   └── tsconfig.json
-│
+├── .github/workflows/ci.yml     # CI: lint, type-check, build via Turborepo
+├── package.json                 # Root workspace + turbo scripts
+├── pnpm-workspace.yaml
+├── turbo.json                   # Turborepo task pipeline
 ├── .gitignore
-├── CONTRIBUTION.md
+├── CONTRIBUTING.md
 ├── README.md
 └── ...
 ```
@@ -130,19 +134,23 @@ To get a local copy of TeamSync running, follow these steps.
 
 Make sure you have the following installed on your machine:
 
-  - Node.js v18 or higher
-  - npm or yarn
+  - Node.js v20 or higher (see `.nvmrc`)
+  - [pnpm](https://pnpm.io/) v10 or higher
   - A MongoDB instance (local or hosted with MongoDB Atlas)
 
 ### Installation
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/hasnaintype/teamsync-server.git
-    cd teamsync-server
+    git clone https://github.com/hasnaintypes/teamsync-monorepo.git
+    cd teamsync-monorepo
     ```
-2.  Configure environment variables for both the client and server.
-      - Navigate to the `client` and `server` directories.
+2.  Install all workspace dependencies from the repository root (installs both `client` and `server` in one step):
+    ```bash
+    pnpm install
+    ```
+3.  Configure environment variables for both apps.
+      - Navigate to `apps/client` and `apps/server`.
       - In each directory, copy `.env.example` to a new file named `.env`.
       - Fill in the required values for your MongoDB URI, API base URL, and session secret.
 
@@ -150,36 +158,31 @@ Make sure you have the following installed on your machine:
 
 ## Development Workflow
 
-To start developing on TeamSync, you will need to run both the client and server applications.
+TeamSync uses [Turborepo](https://turbo.build/repo) to orchestrate both apps from the repository root.
 
-### Backend (`server`)
+### Run everything at once (recommended)
 
-Navigate to the `server` directory to manage the backend.
+From the repo root, start both the client and server in parallel:
 
 ```bash
-cd server
-npm install
+pnpm dev
 ```
 
-Start the development server with live reload:
+Other root-level commands (each runs across both apps via Turborepo, with caching):
 
 ```bash
-npm run dev
+pnpm build        # Build both apps
+pnpm lint         # Lint both apps
+pnpm type-check   # Type-check both apps
 ```
 
-### Frontend (`client`)
+### Run a single app
 
-Navigate to the `client` directory to manage the frontend.
-
-```bash
-cd client
-npm install
-```
-
-Start the Vite development server:
+Use pnpm's `--filter` flag to target just one workspace package:
 
 ```bash
-npm run dev
+pnpm --filter team-sync-server dev   # Backend only
+pnpm --filter team-sync-client dev   # Frontend only
 ```
 
 -----
@@ -188,17 +191,19 @@ npm run dev
 
 The API documentation is generated using Swagger/OpenAPI, providing a detailed and interactive guide for all available endpoints.
 
-  - **Development**: Access the documentation at `http://localhost:5000/api/docs`.
-  - **Production**: The documentation is available at `https://your-app-name.railway.app/api/docs`.
+  - **Development**: Access the documentation at `http://localhost:8000/api/docs`.
+  - **Production**: The documentation is available at `https://your-app-name.onrender.com/api/docs`.
 
 -----
 
 ## Deployment
 
-Both the client and server are configured for seamless deployment.
+Both apps are configured for seamless deployment from this Turborepo monorepo.
 
-  - **Backend**: The backend is configured for deployment on **Railway**. Refer to the `DEPLOYMENT.md` file in the `server` directory for detailed instructions.
-  - **Frontend**: The frontend is a static site and can be deployed to any static hosting provider like **Vercel** or **Netlify**.
+  - **Backend**: Deployed on **[Render](https://render.com/)** using the `render.yaml` Blueprint at the repository root, which builds and starts only the `team-sync-server` workspace via Turborepo filters (`pnpm turbo run build --filter=team-sync-server`).
+  - **Frontend**: Deployed on **Vercel** from `apps/client` (see `apps/client/vercel.json`). Set the project's Root Directory to `apps/client` in the Vercel dashboard.
+
+Required environment variables for each app are documented in their respective `.env.example` files (`apps/client/.env.example`, `apps/server/.env.example`) — configure the equivalent values in each platform's dashboard for production (the Render Blueprint marks secrets as `sync: false` so they must be entered manually in the Render dashboard).
 
 -----
 
@@ -214,5 +219,5 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 
 A passionate full-stack developer specializing in building scalable and modern web applications.
 
-  - [GitHub](https://github.com/hasnaintype)
+  - [GitHub](https://github.com/hasnaintypes)
   - [LinkedIn](https://linkedin.com/in/hasnainx)

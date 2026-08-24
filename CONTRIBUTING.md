@@ -40,33 +40,30 @@ First, you need to fork the main repository to your personal GitHub account:
 3. Clone your forked repository to your local machine:
 
 ```sh
-git clone https://github.com/YOUR_GITHUB_USERNAME/teamsync-server.git
-cd teamsync-server
+git clone https://github.com/YOUR_GITHUB_USERNAME/teamsync-monorepo.git
+cd teamsync-monorepo
 ````
 
 4. Add the main repository as an upstream remote to stay up to date:
 
 ```sh
-git remote add upstream https://github.com/hasnaintype/teamsync-server.git
+git remote add upstream https://github.com/hasnaintypes/teamsync-monorepo.git
 ```
 
 ### 2. Set Up the Development Environment
 
-TeamSync is a monorepo with a separate frontend and backend. You will need to set up both.
+TeamSync is a [Turborepo](https://turbo.build/repo) monorepo (pnpm workspaces) containing the `apps/client` frontend and `apps/server` backend. Prerequisites: Node.js v20+ (see `.nvmrc`) and [pnpm](https://pnpm.io/) v10+.
 
 **Install Dependencies**
-From the root of the repository, navigate to both the client and server directories to install their respective dependencies:
+From the root of the repository, a single install sets up both workspaces:
 
 ```sh
-cd client
-npm install
-cd ../server
-npm install
+pnpm install
 ```
 
 **Configure Environment Variables**
 
-* In both the `client` and `server` directories, copy `.env.example` to `.env`.
+* In both `apps/client` and `apps/server`, copy `.env.example` to `.env`.
 * Fill in the required values for your MongoDB URI, API base URL, and other secrets as needed.
 
 ---
@@ -87,20 +84,17 @@ git checkout -b feature/your-feature-name
 
 ### 2. Run the Applications
 
-You need to run both the frontend and backend servers concurrently. Open two separate terminal windows.
-
-**Start Backend**:
-In the `server` directory, run:
+From the repository root, run both the frontend and backend concurrently via Turborepo:
 
 ```sh
-npm run dev
+pnpm dev
 ```
 
-**Start Frontend**:
-In the `client` directory, run:
+To run just one app, use pnpm's `--filter` flag:
 
 ```sh
-npm run dev
+pnpm --filter team-sync-server dev   # Backend only
+pnpm --filter team-sync-client dev   # Frontend only
 ```
 
 ### 3. Make Your Changes
@@ -108,24 +102,17 @@ npm run dev
 Implement your feature or bug fix. As you work, keep the following in mind:
 
 * **Coding Style**:
-  We use ESLint and Prettier to maintain a consistent code style. Ensure your code is properly formatted by running the linting commands.
+  We use ESLint to maintain a consistent code style in both apps. Run lint across the whole monorepo (via Turborepo, with caching):
 
 ```sh
-# In the client directory
-npm run lint
-
-# In the server directory
-npm run lint
+pnpm lint
 ```
 
 * **TypeScript**:
-  The entire codebase is written in TypeScript. Always ensure your changes are type-safe.
+  The entire codebase is written in TypeScript in strict mode. Always ensure your changes are type-safe:
 
 ```sh
-# In the client directory
-npm run type-check
-
-# In the server directory (type check runs during build process)
+pnpm type-check
 ```
 
 * **Testing**:
